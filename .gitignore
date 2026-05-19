@@ -1,3 +1,10 @@
+checkpoints/
+data/
+gsm8k-*/
+outputs/
+wandb/
+gsm8k-*
+
 # Python-generated files
 __pycache__/
 *.py[oc]

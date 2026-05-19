@@ -3,8 +3,54 @@ name = "warmstart-entropy"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
-requires-python = ">=3.14"
-dependencies = []
+requires-python = ">=3.12, <3.13"
+dependencies = [
+  "cachetools>=7.1.3",
+  "fastapi>=0.136.1",
+  "uvicorn>=0.47.0",
+  "tensordict>=0.10.0",
+  "huggingface-hub>=0.36.2",
+]
+
+[project.optional-dependencies]
+gpu = [
+  "torch==2.10.0+cu129",
+  "torchvision",
+  "torchaudio",
+  "flash-attn",
+  "flash-attn-3",
+  "flash-attn-4",
+  "nvidia-ml-py",
+]
+vllm = [
+  "vllm>=0.14.0",
+]
+verl = [
+  "verl",
+]
 
 [tool.uv.sources]
 verl = { git = "https://github.com/verl-project/verl.git" }
+torch = [
+  { index = "pytorch", extra = "gpu" },
+]
+torchvision = { index = "pytorch" }
+torchaudio = { index = "pytorch" }
+flash-attn = { url = "https://github.com/Luosuu/flash-attention3-wheels/releases/download/v0.0.2/flash_attn-2.8.4+cu129torch2.10cxx11abiTRUE-cp312-cp312-linux_x86_64.whl" }
+flash-attn-3 = { url = "https://github.com/windreamer/flash-attention3-wheels/releases/download/2026.03.16-4d76052/flash_attn_3-3.0.0+20260316.cu129torch2100cxx11abitrue.71bf77-cp39-abi3-linux_x86_64.whl" }
+# Pin to FA4 4.0.0b5: b7+ contains commits that break MLA bitwise alignment
+# (rollout_probs_diff_max regresses from 0 to ~0.18 on Moonlight). Needs
+# upstream investigation before we can bump.
+flash-attn-4 = { url = "https://files.pythonhosted.org/packages/7a/37/5b0128141da6faf03ec0cee1fc30061a3f50a3a4fcf6bc2a8bafa32e4cd2/flash_attn_4-4.0.0b5.tar.gz" }
+
+[tool.uv]
+no-build-isolation-package = ["flash-attn"]
+environments = ["sys_platform == 'linux' and platform_machine == 'x86_64' and platform_python_implementation == 'CPython'"]
+override-dependencies = [
+  "opencv-python-headless<4.13.0",
+]
+
+[[tool.uv.index]]
+name = "pytorch"
+url = "https://download.pytorch.org/whl/cu129"
+explicit = true
