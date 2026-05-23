@@ -1,0 +1,35 @@
+# sft_config.yaml
+
+data_root: data/openr1_sft
+wandb_project: "openr1-math-sft"
+
+data:
+  train_files: ${data_root}/full.parquet
+  val_files: ${data_root}/full.parquet
+  messages_key: "messages"
+  use_dynamic_bsz: true
+  micro_batch_size_per_gpu: 64
+  max_token_len_per_gpu: 163840
+
+model:
+  path: "Qwen/Qwen2.5-3B-Instruct"
+  use_remove_padding: true
+  use_liger: true
+  lora_rank: 256
+  lora_alpha: 512
+  target_modules: "all-linear"
+
+optim:
+  lr: 2e-4
+  grad_accumulation_steps: 1
+
+engine: "fsdp"
+
+trainer:
+  project_name: ${wandb_project}
+  experiment_name: "openr1-math-sft-qwen-3b-lora"
+  total_training_steps: 400
+  save_freq: 100
+  default_local_dir: "./checkpoints/openr1-math-sft-qwen-3b-lora"
+  logger: ["console", "wandb"]
+  
