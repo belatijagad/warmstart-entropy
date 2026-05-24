@@ -5,6 +5,8 @@ outputs/
 wandb/
 gsm8k-*
 inputs/
+merged/
+results/
 
 # Python-generated files
 __pycache__/

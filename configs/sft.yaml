@@ -1,5 +1,9 @@
 # sft_config.yaml
 
+defaults:
+  - sft_trainer_engine
+  - _self_
+
 data_root: data/openr1_sft
 wandb_project: "openr1-math-sft"
 
@@ -18,12 +22,16 @@ model:
   lora_rank: 256
   lora_alpha: 512
   target_modules: "all-linear"
+  override_config:
+    attn_implementation: "flash_attention_3"
 
 optim:
   lr: 2e-4
   grad_accumulation_steps: 1
 
-engine: "fsdp"
+engine:
+  model_dtype: bf16
+  dtype: bfloat16
 
 trainer:
   project_name: ${wandb_project}

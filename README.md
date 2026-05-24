@@ -1,10 +1,12 @@
 
+make sure cuda 12.9 (runpod somehow doesnt have template for this)
+
 ```bash
 uv sync --extra gpu --extra vllm --extra verl
 ```
 
 ```bash
-uv run scripts/preprocess/openr1_sft.py --local_save_dir ./data/openr1_sft --splits full --max_samples 2780
+uv run scripts/preprocess/openr1_sft.py --local_save_dir ./data/openr1_sft --splits 1a --max_samples 2780
 ```
 
 ```bash
@@ -13,13 +15,13 @@ export WANDB_API=...
 ```
 
 ```bash
-bash scripts/run_sft.sh
+bash scripts/run_sft.sh 4 ./outputs/models/
 ```
 
 Checkpoints are saved to ./checkpoints/openr1-math-sft-qwen-3b-lora (set in configs/sft.yaml).
 
 ```bash
-python -m verl.model_merger merge \
+uv run -m -m verl.model_merger merge \
 	--backend fsdp \
 	--local_dir checkpoints/openr1-math-sft-qwen-3b-lora/global_step_400/actor \
 	--target_dir ./merged/openr1-math-sft-qwen-3b-lora/step-400
